@@ -3,7 +3,7 @@
     <b-col cols="12">
       <h2>
         Edit Halte
-        <b-link href="#/">(Halte List)</b-link>
+        <b-link href="#/home">(Halte List)</b-link>
       </h2>
       <b-jumbotron>
         <template slot="header">
@@ -25,8 +25,8 @@
 
 <script>
 
-import firebase from '.../Firebase'
-import router from '.../router'
+import firebase from '@/Firebase'
+import router from '@/router/index.js'
 
 export default {
   name: 'ShowHalte',

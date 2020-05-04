@@ -3,7 +3,7 @@
     <b-col cols="12">
       <h2>
         Add Halte
-        <b-link href="#/">(Halte List)</b-link>
+        <b-link href="#/home">(Halte List)</b-link>
       </h2>
       <b-jumbotron>
         <b-form @submit="onSubmit">
@@ -44,8 +44,8 @@
 
 <script>
 
-import firebase from '.../Firebase'
-import router from '.../router'
+import firebase from '@/Firebase'
+import router from '@/router/index.js'
 
 export default {
   name: 'AddHalte',
@@ -59,7 +59,7 @@ export default {
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
-      this.index = this.$route.params.id + 1;
+      this.index = parseInt(this.$route.params.id) + 1;
       this.ref.doc('halte_'+this.index).set(this.halte_bus).then(() => {
         console.log("Document successfully added!");
         this.halte_bus.name = ''

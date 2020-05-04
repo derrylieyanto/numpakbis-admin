@@ -3,12 +3,11 @@
     <b-col cols="12">
       <h2>
         Halte List
-        <b-link href="#/add-halte">(Add Halte)</b-link>
-        <b-btn class="add-btn" variant="success" @click.stop="addhalte(lastIndex)">Edit</b-btn>
+        <b-btn class="add-btn" variant="success" @click.stop="addhalte(lastIndex)">Add</b-btn>
       </h2>
       <b-table striped hover :items="halte_buses" :fields="fields">
-        <template slot="actions" scope="row">
-          <b-btn size="sm" @click.stop="details(row.item)">Details</b-btn>
+        <template v-slot:cell(actions)="row">
+        <b-button size="sm" @click.stop="details(row.item)">Details</b-button>
         </template>
       </b-table>
     </b-col>
@@ -17,17 +16,17 @@
 
 <script>
 
-import firebase from '.../Firebase'
-import router from '.../router'
+import firebase from '@/Firebase'
+import router from '@/router/index.js'
 
 export default {
   name: 'HalteList',
   data () {
     return {
-      fields: {
-        name: { label: 'Name', sortable: true, 'class': 'text-left' },
-        actions: { label: 'Action', 'class': 'text-center' }
-      },
+      fields: [
+        { key: 'name',label: 'Name', sortable: true, 'class': 'text-left' },
+        { key: 'actions',label: 'Action', 'class': 'text-center' }
+      ],
       halte_buses: [],
       errors: [],
       ref: firebase.firestore().collection('halte_bus'),
@@ -46,17 +45,18 @@ export default {
         this.lastIndex = temp[1];
       });
     });
-    console.log(this.lastIndex);
+    
   },
   methods: {
       addhalte (id) {
-      router.push({
-        name: 'EditHalte',
-        params: { id: id }
-      })
+        console.log(this.lastIndex);
+        router.push({
+            name: 'AddHalte',
+            params: { id: id }
+        })
     },
     details (halte_bus) {
-      router.push({ 
+        router.push({ 
           name: 'ShowHalte', 
           params: { id: halte_bus.key }
         })
