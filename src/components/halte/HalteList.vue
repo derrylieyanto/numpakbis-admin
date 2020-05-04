@@ -17,8 +17,8 @@
 
 <script>
 
-import firebase from '../Firebase'
-import router from '../router'
+import firebase from '.../Firebase'
+import router from '.../router'
 
 export default {
   name: 'HalteList',

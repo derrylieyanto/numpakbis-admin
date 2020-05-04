@@ -44,8 +44,8 @@
 
 <script>
 
-import firebase from '../Firebase'
-import router from '../router'
+import firebase from '.../Firebase'
+import router from '.../router'
 
 export default {
   name: 'EditHalte',
@@ -69,7 +69,7 @@ export default {
     onSubmit (evt) {
       evt.preventDefault()
       const updateRef = firebase.firestore().collection('halte_bus').doc(this.$route.params.id);
-      updateRef.set(this.halte_bus).then((docRef) => {
+      updateRef.set(this.halte_bus).then(() => {
         this.key = ''
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
