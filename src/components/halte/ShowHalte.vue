@@ -16,7 +16,7 @@
           Type: {{halte_bus.type}}<br>
         </template>
         <hr class="my-4">
-        <b-btn class="edit-btn" variant="success" @click.stop="edithalte(key)">Edit</b-btn>
+        <b-btn class="edit-btn" variant="warning" @click.stop="edithalte(key)">Edit</b-btn>
         <b-btn variant="danger" @click.stop="deletehalte(key)">Delete</b-btn>
       </b-jumbotron>
     </b-col>

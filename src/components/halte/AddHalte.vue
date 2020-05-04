@@ -52,14 +52,17 @@ export default {
   data () {
     return {
       ref: firebase.firestore().collection('halte_bus'),
-      halte_bus: {}
+      halte_bus: {},
+      index: 0,
     }
   },
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
 
-      this.ref.add(this.halte_bus).then((docRef) => {
+      
+      this.index = this.$route.params.id + 1;
+      this.ref.doc('halte_'+this.index).set(this.halte_bus).then((docRef) => {
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''

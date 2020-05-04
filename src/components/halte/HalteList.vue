@@ -4,6 +4,7 @@
       <h2>
         Halte List
         <b-link href="#/add-halte">(Add Halte)</b-link>
+        <b-btn class="add-btn" variant="success" @click.stop="addhalte(lastIndex)">Edit</b-btn>
       </h2>
       <b-table striped hover :items="halte_buses" :fields="fields">
         <template slot="actions" scope="row">
@@ -30,6 +31,7 @@ export default {
       halte_buses: [],
       errors: [],
       ref: firebase.firestore().collection('halte_bus'),
+      lastIndex: 0,
     }
   },
   created () {
@@ -40,12 +42,24 @@ export default {
           key: doc.id,
           name: doc.data().name
         });
+        var temp = doc.id.split("_");
+        this.lastIndex = temp[1];
       });
     });
+    console.log(this.lastIndex);
   },
   methods: {
+      addhalte (id) {
+      router.push({
+        name: 'EditHalte',
+        params: { id: id }
+      })
+    },
     details (halte_bus) {
-      router.push({ name: 'ShowHalte', params: { id: halte_bus.key }})
+      router.push({ 
+          name: 'ShowHalte', 
+          params: { id: halte_bus.key }
+        })
     }
   }
 }
@@ -55,5 +69,9 @@ export default {
   .table {
     width: 96%;
     margin: 0 auto;
+  }
+  .add-btn {
+    margin-left: 20px;
+    width: 70px;
   }
 </style>

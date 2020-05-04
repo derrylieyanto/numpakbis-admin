@@ -69,7 +69,7 @@ export default {
     onSubmit (evt) {
       evt.preventDefault()
       const updateRef = firebase.firestore().collection('halte_bus').doc(this.$route.params.id);
-      updateRef.set(this.board).then((docRef) => {
+      updateRef.set(this.halte_bus).then((docRef) => {
         this.key = ''
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
