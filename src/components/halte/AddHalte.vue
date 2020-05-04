@@ -59,10 +59,9 @@ export default {
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
-
-      
       this.index = this.$route.params.id + 1;
-      this.ref.doc('halte_'+this.index).set(this.halte_bus).then((docRef) => {
+      this.ref.doc('halte_'+this.index).set(this.halte_bus).then(() => {
+        console.log("Document successfully added!");
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''
