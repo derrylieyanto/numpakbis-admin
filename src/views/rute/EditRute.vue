@@ -2,7 +2,7 @@
   <b-row>
     <b-col cols="12">
       <h2>
-        Add Halte
+        Edit Halte
         <b-link href="#/home">(Halte List)</b-link>
       </h2>
       <b-jumbotron>
@@ -35,7 +35,8 @@
                     label="Enter Type">
             <b-form-input id="type" v-model.trim="halte_bus.type"></b-form-input>
           </b-form-group>
-          <b-button type="submit" variant="primary">Save</b-button>
+          <b-button class="mx-2" variant="danger" @click.stop="$router.go(-1)">Cancel</b-button>
+          <b-button class="mx-2" type="submit" variant="primary">Update</b-button>
         </b-form>
       </b-jumbotron>
     </b-col>
@@ -48,27 +49,34 @@ import firebase from '@/Firebase'
 import router from '@/router/index.js'
 
 export default {
-  name: 'AddHalte',
+  name: 'EditHalte',
   data () {
     return {
-      ref: firebase.firestore().collection('halte_bus'),
-      halte_bus: {},
-      index: 0,
+      key: this.$route.params.id,
+      halte_bus: {}
     }
+  },
+  created () {
+    const ref = firebase.firestore().collection('halte_bus').doc(this.$route.params.id);
+    ref.get().then((doc) => {
+      if (doc.exists) {
+        this.halte_bus = doc.data();
+      } else {
+        alert("No such document!");
+      }
+    });
   },
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
-      this.index = parseInt(this.$route.params.id) + 1;
-      this.ref.doc('halte_'+this.index).set(this.halte_bus).then(() => {
-        console.log("Document successfully added!");
+      const updateRef = firebase.firestore().collection('halte_bus').doc(this.$route.params.id);
+      updateRef.set(this.halte_bus).then(() => {
+        this.key = ''
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''
         this.halte_bus.type = ''
-        router.push({
-          name: 'HalteList'
-        })
+        router.go(-1)
       })
       .catch((error) => {
         alert("Error adding document: ", error);
@@ -79,6 +87,9 @@ export default {
 </script>
 
 <style>
+h2{
+    text-align: Center;
+  }
   .jumbotron {
     padding: 2rem;
   }

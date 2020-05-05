@@ -1,60 +1,71 @@
 <template>
 <b-container fluid>
-  <b-row>
-    <b-col cols="12">
-      <h2 class="dataTitle">
-        Halte Bus Data
-        <b-button class="add-btn" variant="success" v-b-modal.modal-add>Add Halte Bus</b-button>
-      </h2>
-        
-    </b-col>
-      
-      <b-col lg="6" class="my-1">
-      <b-form-group
-          label="Filter"
-          label-cols-sm="1"
-          label-align-sm="right"
-          label-size="sm"
-          label-for="filterInput"
-          class="mb-10"
-        >
-          <b-input-group size="sm">
-            <b-form-input
-              v-model="filter"
-              type="search"
-              id="filterInput"
-              placeholder="Type to Search"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
 
-       <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Filter On"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          description="Leave all unchecked to filter on all data"
-          class="mb-10">
-          <b-form-checkbox-group v-model="filterOn" class="mt-1">
-            <b-form-checkbox value="name">Name</b-form-checkbox>
-            <b-form-checkbox value="type">Type</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
-      </b-col>
-  </b-row>
+  <div class="card cascade narrower">
+    <div class="view cascade gradient-card-header blue-gradient narrower mx-3 py-2  mb-3 d-flex justify-content-between align-items-center">
+      <h2 class="white-text mx-auto">Halte Bus Data</h2>
+      <div>
+          <b-button class="add-btn mx-3" variant="success" v-b-modal.modal-add>Add Halte Bus</b-button>
+      </div>
+    </div>
+    <!--/Card image-->
+      <div class="px-4">
+          <b-row class="my-1">
+            <b-col>
+            </b-col>
+            <b-col  >
+            <b-form-group
+                label="Filter"
+                label-cols-sm="1"
+                label-align-sm="right"
+                label-size="sm"
+                label-for="filterInput"
+                class="mb-10"
+              >
+                <b-input-group size="sm">
+                  <b-form-input
+                    v-model="filter"
+                    type="search"
+                    id="filterInput"
+                    placeholder="Type to Search"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button class="mx-2 px-2" :disabled="!filter" @click="filter = ''">Clear</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
 
-  <b-table striped hover :items="halte_buses" :fields="fields" :filter="filter" :filterIncludedFields="filterOn">
-    <template v-slot:cell(actions)="row">
-    <!-- <b-button size="sm" class="mx-1" @click.stop="details(row.item)">Details</b-button> -->
-    <b-button size="sm" class="mx-1" variant="warning" @click.stop="edithalte(row.item)">Edit</b-button>
-    <b-button size="sm" class="mx-1" variant="danger" @click.stop="deletehalte(row.item)">Delete</b-button>
-    </template>
-  </b-table>
+            <!-- <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Filter On"
+                label-cols-sm="3"
+                label-align-sm="right"
+                label-size="sm"
+                description="Leave all unchecked to filter on all data"
+                class="mb-10">
+                <b-form-checkbox-group v-model="filterOn" class="mt-1">
+                  <b-form-checkbox value="name">Name</b-form-checkbox>
+                  <b-form-checkbox value="type">Type</b-form-checkbox>
+                </b-form-checkbox-group>
+              </b-form-group>
+            </b-col> -->
+          </b-row>
+
+          <div class="table-wrapper">
+
+              <!--Table-->
+              <b-table striped hover :items="halte_buses" :fields="fields" :filter="filter" :filterIncludedFields="filterOn">
+                <template v-slot:cell(actions)="row">
+                <!-- <b-button size="sm" class="mx-1" @click.stop="details(row.item)">Details</b-button> -->
+                <b-button size="sm" class="mx-1" variant="warning" @click.stop="edithalte(row.item)">Edit</b-button>
+                <b-button size="sm" class="mx-1" variant="danger" @click.stop="deletehalte(row.item)">Delete</b-button>
+                </template>
+              </b-table>
+          </div>
+      </div>
+  </div>
+  
 
   <!-- Add modal -->
     <b-modal
@@ -208,7 +219,7 @@ export default {
 </script>
 
 <style>
-  .dataTitle{
+  /* .dataTitle{
     text-align: left;
     margin-bottom: 20px;
   }
@@ -220,5 +231,5 @@ export default {
     margin-left: 20px;
     margin-right: 40px;
     float: right;
-  }
+  } */
 </style>

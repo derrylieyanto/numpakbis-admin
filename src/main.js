@@ -6,12 +6,18 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import firebase from '@/Firebase'
+import 'bootstrap-css-only/css/bootstrap.min.css'
+import 'mdbvue/lib/css/mdb.min.css'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
-Vue.config.productionTip = false
-
-let app = '';
+import './assets/app.scss';
 Vue.use(BootstrapVue);
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
+
+
+Vue.config.productionTip = false;
+let app = '';
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
     /* eslint-disable no-new */
