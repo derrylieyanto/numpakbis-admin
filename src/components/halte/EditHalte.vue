@@ -3,7 +3,7 @@
     <b-col cols="12">
       <h2>
         Edit Halte
-        <router-link :to="{ name: 'ShowHalte', params: { id: key } }">(Show Halte)</router-link>
+        <b-link href="#/home">(Halte List)</b-link>
       </h2>
       <b-jumbotron>
         <b-form @submit="onSubmit">
@@ -35,7 +35,8 @@
                     label="Enter Type">
             <b-form-input id="type" v-model.trim="halte_bus.type"></b-form-input>
           </b-form-group>
-          <b-button type="submit" variant="primary">Update</b-button>
+          <b-button class="mx-2" variant="danger" @click.stop="$router.go(-1)">Cancel</b-button>
+          <b-button class="mx-2" type="submit" variant="primary">Update</b-button>
         </b-form>
       </b-jumbotron>
     </b-col>
@@ -75,7 +76,7 @@ export default {
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''
         this.halte_bus.type = ''
-        router.push({ name: 'ShowHalte', params: { id: this.$route.params.id }})
+        router.go(-1)
       })
       .catch((error) => {
         alert("Error adding document: ", error);
@@ -86,6 +87,9 @@ export default {
 </script>
 
 <style>
+h2{
+    text-align: Center;
+  }
   .jumbotron {
     padding: 2rem;
   }

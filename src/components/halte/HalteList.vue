@@ -1,17 +1,104 @@
 <template>
+<b-container fluid>
   <b-row>
     <b-col cols="12">
-      <h2>
-        Halte List
-        <b-btn class="add-btn" variant="success" @click.stop="addhalte(lastIndex)">Add</b-btn>
+      <h2 class="dataTitle">
+        Halte Bus Data
+        <b-button class="add-btn" variant="success" v-b-modal.modal-add>Add Halte Bus</b-button>
       </h2>
-      <b-table striped hover :items="halte_buses" :fields="fields">
-        <template v-slot:cell(actions)="row">
-        <b-button size="sm" @click.stop="details(row.item)">Details</b-button>
-        </template>
-      </b-table>
+        
     </b-col>
+      
+      <b-col lg="6" class="my-1">
+      <b-form-group
+          label="Filter"
+          label-cols-sm="1"
+          label-align-sm="right"
+          label-size="sm"
+          label-for="filterInput"
+          class="mb-10"
+        >
+          <b-input-group size="sm">
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Type to Search"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+
+       <b-col lg="6" class="my-1">
+        <b-form-group
+          label="Filter On"
+          label-cols-sm="3"
+          label-align-sm="right"
+          label-size="sm"
+          description="Leave all unchecked to filter on all data"
+          class="mb-10">
+          <b-form-checkbox-group v-model="filterOn" class="mt-1">
+            <b-form-checkbox value="name">Name</b-form-checkbox>
+            <b-form-checkbox value="type">Type</b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+      </b-col>
   </b-row>
+
+  <b-table striped hover :items="halte_buses" :fields="fields" :filter="filter" :filterIncludedFields="filterOn">
+    <template v-slot:cell(actions)="row">
+    <!-- <b-button size="sm" class="mx-1" @click.stop="details(row.item)">Details</b-button> -->
+    <b-button size="sm" class="mx-1" variant="warning" @click.stop="edithalte(row.item)">Edit</b-button>
+    <b-button size="sm" class="mx-1" variant="danger" @click.stop="deletehalte(row.item)">Delete</b-button>
+    </template>
+  </b-table>
+
+  <!-- Add modal -->
+    <b-modal
+      id="modal-add"
+      ref="modal"
+      title="Add Halte Bus"
+      @show="resetModalAdd"
+      @hidden="resetModalAdd"
+      @ok="handleOkAdd"
+    >
+      <form ref="form" @submit="handleSubmitAdd">
+        <b-form-group id="fieldsetHorizontal"
+                  horizontal
+                  :label-cols="4"
+                  breakpoint="md"
+                  label="Enter Name">
+          <b-form-input id="name" v-model.trim="halte_bus.name"></b-form-input>
+        </b-form-group>
+        <b-form-group id="fieldsetHorizontal"
+                  horizontal
+                  :label-cols="4"
+                  breakpoint="md"
+                  label="Enter Latitude">
+          <b-form-input id="latitude" v-model.trim="halte_bus.latitude"></b-form-input>
+        </b-form-group>
+        <b-form-group id="fieldsetHorizontal"
+                  horizontal
+                  :label-cols="4"
+                  breakpoint="md"
+                  label="Enter Longitude">
+          <b-form-input id="longitude" v-model.trim="halte_bus.longitude"></b-form-input>
+        </b-form-group>
+        <b-form-group id="fieldsetHorizontal"
+                  horizontal
+                  :label-cols="4"
+                  breakpoint="md"
+                  label="Enter Type">
+          <b-form-input id="type" v-model.trim="halte_bus.type"></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
+    
+  
+</b-container>
 </template>
 
 <script>
@@ -25,12 +112,19 @@ export default {
     return {
       fields: [
         { key: 'name',label: 'Name', sortable: true, 'class': 'text-left' },
+        { key: 'lat',label: 'Latitude', 'class': 'text-left' },
+        { key: 'long',label: 'Longitude', 'class': 'text-left' },
+        { key: 'type',label: 'Type', sortable: true, 'class': 'text-left' },
         { key: 'actions',label: 'Action', 'class': 'text-center' }
       ],
+      filter: null,
+      filterOn: [],
       halte_buses: [],
       errors: [],
       ref: firebase.firestore().collection('halte_bus'),
       lastIndex: 0,
+      halte_bus: {},
+      index: 0
     }
   },
   created () {
@@ -39,7 +133,10 @@ export default {
       querySnapshot.forEach((doc) => {
         this.halte_buses.push({
           key: doc.id,
-          name: doc.data().name
+          name: doc.data().name,
+          lat: doc.data().latitude,
+          long: doc.data().longitude,
+          type: doc.data().type
         });
         var temp = doc.id.split("_");
         this.lastIndex = temp[1];
@@ -48,30 +145,80 @@ export default {
     
   },
   methods: {
-      addhalte (id) {
-        console.log(this.lastIndex);
-        router.push({
-            name: 'AddHalte',
-            params: { id: id }
-        })
+    // addhalte (id) {
+    //   console.log(this.lastIndex);
+    //   router.push({
+    //     name: 'AddHalte',
+    //     params: { id: id }
+    //   })
+    // },
+    // details (halte_bus) {
+    //     router.push({ 
+    //       name: 'ShowHalte', 
+    //       params: { id: halte_bus.key }
+    //     })
+    // }, 
+    edithalte (id) {
+      router.push({
+        name: 'EditHalte',
+        params: { id: id.key }
+      })
     },
-    details (halte_bus) {
-        router.push({ 
-          name: 'ShowHalte', 
-          params: { id: halte_bus.key }
-        })
+    deletehalte (id) {
+      if(confirm("Yakin akan menghapus data??")){
+        firebase.firestore().collection('halte_bus').doc(id.key).delete().then(() => {
+          console.log("Data berhasil dihapus.");
+        }).catch((error) => {
+          alert("Error removing document: ", error);
+        });
+      }
+    },
+    resetModalAdd() {
+      this.halte_bus.name = ''
+      this.halte_bus.latitude = ''
+      this.halte_bus.longitude = ''
+      this.halte_bus.type = ''
+      this.index = 0
+    },
+    handleOkAdd(bvModalEvt) {
+      // Trigger submit handler
+      this.handleSubmitAdd(bvModalEvt)
+    },
+    handleSubmitAdd(evt) {
+      evt.preventDefault()
+      this.index = parseInt(this.lastIndex) + 1;
+      this.ref.doc('halte_'+this.index).set(this.halte_bus).then(() => {
+        console.log("Document successfully added!");
+        this.halte_bus.name = ''
+        this.halte_bus.latitude = ''
+        this.halte_bus.longitude = ''
+        this.halte_bus.type = ''
+        this.index = 0
+      })
+      .catch((error) => {
+        alert("Error adding document: ", error);
+      });
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-add')
+      })
     }
   }
 }
 </script>
 
 <style>
+  .dataTitle{
+    text-align: left;
+    margin-bottom: 20px;
+  }
   .table {
-    width: 96%;
-    margin: 0 auto;
+    width: 70%;
+    margin: 20 auto;
   }
   .add-btn {
     margin-left: 20px;
-    width: 70px;
+    margin-right: 40px;
+    float: right;
   }
 </style>
