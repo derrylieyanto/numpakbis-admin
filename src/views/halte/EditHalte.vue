@@ -3,7 +3,6 @@
     <b-col cols="12">
       <h2>
         Edit Halte
-        <b-link href="#/home">(Halte List)</b-link>
       </h2>
       <b-jumbotron>
         <b-form @submit="onSubmit">

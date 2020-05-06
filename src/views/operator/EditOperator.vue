@@ -2,7 +2,7 @@
   <b-row>
     <b-col cols="12">
       <h2>
-        Edit Rute
+        Edit Operator
       </h2>
       <b-jumbotron>
         <b-form @submit="onSubmit">
@@ -11,17 +11,25 @@
                     :label-cols="4"
                     breakpoint="md"
                     label="Enter Name">
-            <b-form-input id="name" v-model.trim="rute_bus.rute_name"></b-form-input>
+            <b-form-input id="name" v-model.trim="member.name"></b-form-input>
           </b-form-group>
           <b-form-group id="fieldsetHorizontal"
                     horizontal
                     :label-cols="4"
                     breakpoint="md"
-                    label="Enter Type">
-            <b-form-input id="type" v-model.trim="rute_bus.rute_type"></b-form-input>
+                    label="Enter Email">
+            <b-form-input id="latitude" v-model.trim="member.email"></b-form-input>
           </b-form-group>
-          <b-button class="mx-2" variant="danger" @click.stop="$router.go(-1)">Cancel</b-button>
-          <b-button class="mx-2" type="submit" variant="primary">Update</b-button>
+          <b-form-group id="fieldsetHorizontal"
+                    horizontal
+                    :label-cols="4"
+                    breakpoint="md"
+                    label="Enter No.HP">
+            <b-form-input id="longitude" v-model.trim="member.noHP"></b-form-input>
+          </b-form-group>
+          
+          <b-button class="mx-2 btn-right" type="submit" variant="primary">Update</b-button>
+          <b-button class="mx-2 btn-right" variant="danger" @click.stop="$router.go(-1)">Cancel</b-button>
         </b-form>
       </b-jumbotron>
     </b-col>
@@ -38,14 +46,14 @@ export default {
   data () {
     return {
       key: this.$route.params.id,
-      rute_bus: {}
+      member: {}
     }
   },
   created () {
-    const ref = firebase.firestore().collection('rute_bus').doc(this.$route.params.id);
+    const ref = firebase.firestore().collection('member').doc(this.$route.params.id);
     ref.get().then((doc) => {
       if (doc.exists) {
-        this.rute_bus = doc.data();
+        this.member = doc.data();
       } else {
         alert("No such document!");
       }
@@ -54,11 +62,12 @@ export default {
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
-      const updateRef = firebase.firestore().collection('rute_bus').doc(this.$route.params.id);
-      updateRef.set(this.rute_bus).then(() => {
+      const updateRef = firebase.firestore().collection('member').doc(this.$route.params.id);
+      updateRef.set(this.member).then(() => {
         this.key = ''
-        this.rute_bus.rute_name = ''
-        this.rute_bus.rute_type = ''
+        this.member.name = ''
+        this.member.email = ''
+        this.member.noHP = ''
         router.go(-1)
       })
       .catch((error) => {
@@ -75,5 +84,8 @@ h2{
   }
   .jumbotron {
     padding: 2rem;
+  }
+  .btn-right{
+      float: right;
   }
 </style>

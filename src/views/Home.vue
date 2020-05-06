@@ -57,7 +57,7 @@
                             </router-link>
                         </li>
                         <li>
-                            <router-link to="/home/halte">
+                            <router-link to="/home/halte" exact-active-class="">
                                 <i class="fas fa-bus-alt"></i>
                                 <span>Halte Bus</span>
                             </router-link>
@@ -70,13 +70,13 @@
                         </li>
 
                         <li>
-                            <router-link to="/admin/profile">
+                            <router-link to="/home/member">
                                 <i class="fa fa-user"></i>
                                 <span>Member</span>
                             </router-link>
                         </li>
                         <li>
-                            <router-link to="/home/overview">
+                            <router-link to="/home/operator">
                                 <i class="fas fa-user-tie"></i>
                                 <span>Operator</span>
                             </router-link>
@@ -95,6 +95,7 @@
         </nav>
         <!-- sidebar-content  -->
         <main class="page-content">
+     
             <router-view/>
         </main>
         <!-- page-content" -->
@@ -116,23 +117,7 @@ export default {
   components: {
     
   },
-  // computed: {
-  //   crumbs: function() {
-  //     let pathArray = this.$route.path.split("/")
-  //     pathArray.shift()
-  //     let breadcrumbs = pathArray.reduce((breadcrumbArray, path, idx) => {
-  //       breadcrumbArray.push({
-  //         path: path,
-  //         to: breadcrumbArray[idx - 1]
-  //           ? "/" + breadcrumbArray[idx - 1].path + "/" + path
-  //           : "/" + path,
-  //         text: this.$route.matched[idx].meta.breadCrumb || path,
-  //       });
-  //       return breadcrumbArray;
-  //     }, [])
-  //     return breadcrumbs;
-  //   }
-  // },
+ 
   methods: {
     closeMenu(){
         // We pass the ID of the button that we want to return focus to
@@ -143,7 +128,7 @@ export default {
     },
     logout: function() {
       firebase.auth().signOut().then(() => {
-        this.$router.replace('login')
+        this.$router.push('/');
       })
       .catch((err) =>{
         console.log(err);

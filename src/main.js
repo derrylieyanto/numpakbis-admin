@@ -23,6 +23,8 @@ firebase.auth().onAuthStateChanged(() => {
     /* eslint-disable no-new */
     app = new Vue({
       router,
+      linkActiveClass: "active", // active class for non-exact links.
+      linkExactActiveClass: "active", // active class for *exact* links.
       render: h => h(App)
     }).$mount('#app');
   }

@@ -5,6 +5,10 @@ import HalteList from '@/views/halte/HalteList'
 import EditHalte from '@/views/halte/EditHalte'
 import RuteList from '@/views/rute/RuteList'
 import EditRute from '@/views/rute/EditRute'
+import MemberList from '@/views/member/MemberList'
+import EditMember from '@/views/member/EditMember'
+import OperatorList from '@/views/operator/OperatorList'
+import EditOperator from '@/views/operator/EditOperator'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
 import Overview from '@/views/Overview'
@@ -14,6 +18,7 @@ Vue.use(Router)
 const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
+  linkExactActiveClass: 'is-active',
     routes : [
       {
         path: '/',
@@ -53,6 +58,30 @@ const router = new Router({
             path: 'edit-rute/:id',
             name: 'EditRute',
             component: EditRute,
+            
+          },
+          {
+            path: 'member',
+            name: 'MemberList',
+            component: MemberList,
+            
+          },
+          {
+            path: 'edit-member/:id',
+            name: 'EditMember',
+            component: EditMember,
+            
+          },
+          {
+            path: 'operator',
+            name: 'OperatorList',
+            component: OperatorList,
+            
+          },
+          {
+            path: 'edit-operator/:id',
+            name: 'EditOperator',
+            component: EditOperator,
             
           },
           {

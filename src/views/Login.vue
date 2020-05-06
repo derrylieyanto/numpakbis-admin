@@ -1,10 +1,51 @@
 <template>
+   
+ 
   <div class="login">
-    <h3>Sign In</h3>
+
+     <b-card header-tag="header" footer-tag="footer">
+      <template v-slot:header>
+        <h6 class="mb-0">Numpakbis Admin</h6>
+      </template>
+      <b-card-text>
+        <b-row>
+          <b-col cols="12">
+            <h2>
+              Login
+            </h2>
+            <b-jumbotron>
+              <b-form>
+                <b-form-group id="fieldsetHorizontal"
+                          horizontal
+                          :label-cols="4"
+                          breakpoint="md"
+                          label="Enter Email">
+                  <b-form-input id="email" v-model.trim="email"></b-form-input>
+                </b-form-group>
+                <b-form-group id="fieldsetHorizontal"
+                          horizontal
+                          :label-cols="4"
+                          breakpoint="md"
+                          label="Enter Password">
+                  <b-form-input type="password" id="password" v-model.trim="password"></b-form-input>
+                </b-form-group>
+                <b-button class="mx-2 btn-center" variant="primary" @click="login">Login</b-button>
+              </b-form>
+            </b-jumbotron>
+          </b-col>
+        </b-row>
+      </b-card-text>
+      <template v-slot:footer>
+        <em>numpakbis-admin</em>
+      </template>
+    </b-card>
+
+    <!-- <h3>Sign In</h3>
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
-    <button @click="login">Login</button>
+    <button @click="login">Login</button> -->
   </div>
+
 </template>
 
 <script>
@@ -33,25 +74,12 @@
 </script>
 
 <style scoped>  /* "scoped" attribute limit the CSS to this component only */
-  .login {
-    margin-top: 40px;
+  .btn-center{
+    margin: 0 auto;
   }
-  input {
-    margin: 10px 0;
-    width: 20%;
-    padding: 15px;
-  }
-  button {
-    margin-top: 20px;
-    width: 10%;
-    cursor: pointer;
-  }
-  p {
-    margin-top: 40px;
-    font-size: 13px;
-  }
-  p a {
-    text-decoration: underline;
-    cursor: pointer;
+  .login{
+    width: 50%;
+    margin: 10% auto;
+    text-align: center;
   }
 </style>
