@@ -9,8 +9,9 @@ import firebase from '@/Firebase'
 import 'bootstrap-css-only/css/bootstrap.min.css'
 import 'mdbvue/lib/css/mdb.min.css'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-
 import './assets/app.scss';
+
+
 Vue.use(BootstrapVue);
 Vue.use(VueRouter);
 
