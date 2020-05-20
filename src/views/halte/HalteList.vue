@@ -84,6 +84,13 @@
                   label="Enter Name">
           <b-form-input id="name" v-model.trim="halte_bus.name"></b-form-input>
         </b-form-group>
+         <b-form-group id="fieldsetHorizontal"
+                  horizontal
+                  :label-cols="4"
+                  breakpoint="md"
+                  label="Enter Rute">
+          <b-form-input id="rute" v-model.trim="halte_bus.rute"></b-form-input>
+        </b-form-group>
         <b-form-group id="fieldsetHorizontal"
                   horizontal
                   :label-cols="4"
@@ -126,6 +133,7 @@ export default {
         { key: 'lat',label: 'Latitude', 'class': 'text-left' },
         { key: 'long',label: 'Longitude', 'class': 'text-left' },
         { key: 'type',label: 'Type', sortable: true, 'class': 'text-left' },
+        { key: 'rute',label: 'Rute', 'class': 'text-left' },
         { key: 'actions',label: 'Action', 'class': 'text-center' }
       ],
       filter: null,
@@ -147,10 +155,14 @@ export default {
           name: doc.data().name,
           lat: doc.data().latitude,
           long: doc.data().longitude,
-          type: doc.data().type
+          type: doc.data().type,
+          rute: doc.data().rute
         });
         var temp = doc.id.split("_");
-        this.lastIndex = temp[1];
+        if(parseInt(temp[1])>this.lastIndex){
+          this.lastIndex = temp[1];
+        }
+        
       });
     });
     
@@ -176,6 +188,7 @@ export default {
       this.halte_bus.latitude = ''
       this.halte_bus.longitude = ''
       this.halte_bus.type = ''
+      this.halte_bus.rute = ''
       this.index = 0
     },
     handleOkAdd(bvModalEvt) {
@@ -185,12 +198,14 @@ export default {
     handleSubmitAdd(evt) {
       evt.preventDefault()
       this.index = parseInt(this.lastIndex) + 1;
+      console.log('Index : ' + this.index);
       this.ref.doc('halte_'+this.index).set(this.halte_bus).then(() => {
         console.log("Document successfully added!");
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''
         this.halte_bus.type = ''
+        this.halte_bus.rute = ''
         this.index = 0
       })
       .catch((error) => {

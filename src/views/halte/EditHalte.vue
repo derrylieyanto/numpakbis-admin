@@ -17,6 +17,13 @@
                     horizontal
                     :label-cols="4"
                     breakpoint="md"
+                    label="Enter Rute">
+            <b-form-input id="rute" v-model.trim="halte_bus.rute"></b-form-input>
+          </b-form-group>
+          <b-form-group id="fieldsetHorizontal"
+                    horizontal
+                    :label-cols="4"
+                    breakpoint="md"
                     label="Enter Latitude">
             <b-form-input id="latitude" v-model.trim="halte_bus.latitude"></b-form-input>
           </b-form-group>
@@ -75,6 +82,7 @@ export default {
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''
         this.halte_bus.type = ''
+        this.halte_bus.rute = ''
         router.go(-1)
       })
       .catch((error) => {

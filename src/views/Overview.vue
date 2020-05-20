@@ -39,7 +39,8 @@ export default {
   methods: {
    getRealtimeData() {
       socket.on("receive_message", fetchedData => {
-        this.socketMessage.push(fetchedData);
+        //this.socketMessage.push(fetchedData);
+        console.log(fetchedData);
       })
       socket.on("pingServer", fetchedData => {
         this.socketMessage.push(fetchedData);
