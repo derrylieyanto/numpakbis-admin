@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <!-- sidebar-search  -->
-                <div class="sidebar-item sidebar-search">
+                <!-- <div class="sidebar-item sidebar-search">
                     <div>
                         <div class="input-group">
                             <input type="text" class="form-control search-menu" placeholder="Search...">
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- sidebar-menu  -->
                 <div class=" sidebar-item sidebar-menu">
                     <ul>
@@ -51,7 +51,7 @@
                         </li>
 
                         <li>
-                            <router-link :to="{ name: 'Overview'}">
+                            <router-link :to="{ name: 'Monitoring'}">
                                 <i class="fa fa-chart-line"></i>
                                 <span>Monitoring</span>
                             </router-link>

@@ -11,7 +11,7 @@ import OperatorList from '@/views/operator/OperatorList'
 import EditOperator from '@/views/operator/EditOperator'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
-import Overview from '@/views/Overview'
+import Monitoring from '@/views/Monitoring'
 
 Vue.use(Router)
 
@@ -85,9 +85,9 @@ const router = new Router({
             
           },
           {
-            path: 'overview',
-            name: 'Overview',
-            component: Overview,
+            path: 'monitoring',
+            name: 'Monitoring',
+            component: Monitoring,
           }
         ]
       },

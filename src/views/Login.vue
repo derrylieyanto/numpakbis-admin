@@ -62,7 +62,7 @@
       login: function() {
         firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
           () => {
-            this.$router.replace('home')
+            this.$router.replace('home/monitoring')
           },
           (err) => {
             alert('Oops. ' + err.message)
