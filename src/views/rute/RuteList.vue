@@ -63,7 +63,7 @@
                             </b-row>
                         </template>
                         <b-card-text>
-                          <b-table  :items="halte_buses" :fields="field2">
+                          <b-table  :items="halte_buses" :sort-by="sortBy" :fields="field2">
                             <template v-slot:cell(actions)="row2">
                             <b-button size="sm" class="mx-1" variant="danger" @click="deletehalte(row2.item,row.index)"><i class="far fa-trash-alt"></i></b-button>
                             </template>
@@ -118,15 +118,13 @@
       @hidden="resetModalAddHalte"
       @ok="handleOkAddHalte"
     >
-      <form ref="form" @submit="handleSubmitAddHalte">
-        <!-- <b-button size="sm" class="mx-1 my-2 add-halte" variant="success" @click.stop="addSelectHalte()"><i class="fa fa-plus"></i></b-button> -->
-        <b-form-select v-model="selected" :options="options" class="mb-3">
-        <!-- This slot appears above the options from 'options' prop -->
-        <template v-slot:first>
-          <b-form-select-option :value="null" disabled>-- Please select halte bus --</b-form-select-option>
-        </template>
 
-      </b-form-select>
+      <form ref="form" @submit="handleSubmitAddHalte">
+
+        <div>
+          <label class="typo__label">Select with search</label>
+          <multiselect v-model="selected" :options="options" :custom-label="nameWithLang" placeholder="-- Please select halte bus --" label="name" track-by="name"></multiselect>
+        </div>
     
       </form>
     </b-modal>
@@ -142,10 +140,13 @@ import router from '@/router/index.js'
 
 
 
+
 export default {
   name: 'HalteList',
   data () {
     return {
+      value: [],
+      sortBy: 'key',
       fields: [
         { key: 'name',label: 'Name', sortable: true, 'class': 'text-left' },
         { key: 'type',label: 'Type', sortable: true, 'class': 'text-left' },
@@ -199,7 +200,10 @@ export default {
                     long: doc2.data().longitude
                 };
                 this.rute_buses[this.i].halte_bus.push(tempObj);
-                this.lastIndexHalte = doc2.id;
+                if(parseInt(doc2.id)>this.lastIndexHalte){
+                  this.lastIndexHalte = doc2.id;
+                }
+                
             });
             this.i=this.i+1;
         }).catch(err => {
@@ -210,10 +214,14 @@ export default {
     });
   },
   methods: {
+    nameWithLang ({name}) {
+      return `${name}`
+    },
     toggleDetails(row){
        if(row._showDetails){
           this.$set(row, '_showDetails', false)
           this.ref.doc(row.key).collection('halte_bus').onSnapshot((querySnapshot) => {
+            this.lastIndexHalte = 0;
             this.halte_buses = [];
             querySnapshot.forEach((doc) => {
               this.halte_buses.push({
@@ -222,11 +230,15 @@ export default {
                 lat: doc.data().latitude,
                 long: doc.data().longitude,
               });
-              this.lastIndexHalte = doc.id;
+              if(parseInt(doc.id)>this.lastIndexHalte){
+                this.lastIndexHalte = doc.id;
+              }
             });
           });
+          //console.log("last index :" + this.lastIndexHalte);
         }else{
           this.ref.doc(row.key).collection('halte_bus').onSnapshot((querySnapshot) => {
+            this.lastIndexHalte = 0;
             this.halte_buses = [];
             querySnapshot.forEach((doc) => {
               this.halte_buses.push({
@@ -235,9 +247,12 @@ export default {
                 lat: doc.data().latitude,
                 long: doc.data().longitude,
               });
-              this.lastIndexHalte = doc.id;
+              if(parseInt(doc.id)>this.lastIndexHalte){
+                this.lastIndexHalte = doc.id;
+              }
             });
           });
+          //console.log("last index :" + this.lastIndexHalte);
         this.$nextTick(() => {
           this.$set(row, '_showDetails', true)
         })
@@ -302,12 +317,14 @@ export default {
       this.halte_bus.name = ''
       this.halte_bus.latitude = ''
       this.halte_bus.longitude = ''
+      this.halte_bus.type = ''
       this.indexHalte = 0
     },
     showModalAddHalte() {
       this.halte_bus.name = ''
       this.halte_bus.latitude = ''
       this.halte_bus.longitude = ''
+      this.halte_bus.type = ''
       this.indexHalte = 0
 
       firebase.firestore().collection('halte_bus').onSnapshot((querySnapshot) => {
@@ -317,13 +334,15 @@ export default {
           this.halte_bus.name = doc.data().name;
           this.halte_bus.latitude = doc.data().latitude;
           this.halte_bus.longitude = doc.data().longitude;
+          this.halte_bus.type = doc.data().type;
           this.options.push({
-            value: {
+      
               name: doc.data().name,
               latitude: doc.data().latitude,
-              longitude: doc.data().longitude
-            },
-            text: doc.data().name
+              longitude: doc.data().longitude,
+              type: doc.data().type,
+         
+        
           });
         });
       });
@@ -334,15 +353,19 @@ export default {
     handleSubmitAddHalte(evt) {
       evt.preventDefault()
       this.indexHalte = parseInt(this.halte_buses.length) + 1;
-        this.halte_bus.name = this.selected.name
-        this.halte_bus.latitude = this.selected.latitude
-        this.halte_bus.longitude = this.selected.longitude
+      this.halte_bus.key = this.indexHalte;
+      this.halte_bus.name = this.selected.name;
+      this.halte_bus.latitude = this.selected.latitude;
+      this.halte_bus.longitude = this.selected.longitude;
+       this.halte_bus.type = this.selected.type;
       this.ref.doc('rute_'+this.indexRute).collection('halte_bus').doc(this.indexHalte.toString()).set(this.halte_bus).then(() => {
         console.log("Document successfully added!");
         this.halte_bus.name = ''
         this.halte_bus.latitude = ''
         this.halte_bus.longitude = ''
+        this.halte_bus.type = ''
         this.indexHalte = 0
+        this.halte_bus.key = 0
       })
       .catch((error) => {
         alert("Error adding document: ", error);
@@ -359,7 +382,7 @@ export default {
   }
 }
 </script>
-
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
   .add-halte {
     float: right;

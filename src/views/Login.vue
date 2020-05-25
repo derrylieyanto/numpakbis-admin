@@ -27,9 +27,9 @@
                           :label-cols="4"
                           breakpoint="md"
                           label="Enter Password">
-                  <b-form-input type="password" id="password" v-model.trim="password"></b-form-input>
+                  <b-form-input type="password" id="password" v-model.trim="password" @keyup.enter.native="login"></b-form-input>
                 </b-form-group>
-                <b-button class="mx-2 btn-center" variant="primary" @click="login">Login</b-button>
+                <b-button class="mx-2 btn-center" variant="primary" @click.stop="login">Login</b-button>
               </b-form>
             </b-jumbotron>
           </b-col>
