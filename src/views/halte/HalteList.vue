@@ -55,7 +55,11 @@
           <div class="table-wrapper">
 
               <!--Table-->
-              <b-table striped hover :items="halte_buses" :fields="fields" :filter="filter" :filterIncludedFields="filterOn">
+              <b-table striped hover :items="halte_buses" :fields="fields" :filter="filter" 
+                :filterIncludedFields="filterOn" :current-page="currentPage"
+                :per-page="perPage"
+                @filtered="onFiltered"
+              >
                 <template v-slot:cell(actions)="row">
                 <!-- <b-button size="sm" class="mx-1" @click.stop="details(row.item)">Details</b-button> -->
                 <b-button size="sm" class="mx-1" variant="warning" @click.stop="edithalte(row.item)">Edit</b-button>
@@ -63,9 +67,23 @@
                 </template>
               </b-table>
           </div>
+          <hr>
+
+          <b-pagination
+              v-model="currentPage"
+              :total-rows="totalRows"
+              :per-page="perPage"
+              align="center"
+              size="lg"
+              class="my-0"
+              
+          ></b-pagination>
+         <br><br>
+
       </div>
+      
   </div>
-  
+
 
   <!-- Add modal -->
     <b-modal
@@ -78,50 +96,58 @@
     >
       <form ref="form" @submit="handleSubmitAdd">
         <b-form-group id="fieldsetHorizontal"
-                  :state="nameState"
-                  invalid-feedback="Name is required"
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Name">
-          <b-form-input id="name" v-model.trim="halte_bus.name" @change="nameValid" :state="nameState" required></b-form-input>
+          <b-form-input id="name" v-model.trim="$v.halte_bus.name.$model" :state="validateState('name')" aria-describedby="input-1-live-feedback"></b-form-input>
+          <b-form-invalid-feedback
+          id="input-1-live-feedback"
+        >Name field is required</b-form-invalid-feedback>
+         <span style="color:red;font-size:11px" v-if="isSame">Halte telah tersedia.</span>
         </b-form-group>
 
          <b-form-group id="fieldsetHorizontal"
-                  :state="ruteState"
-                  invalid-feedback="Rute is required"
+
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Rute">
-          <b-form-input id="rute" v-model.trim="halte_bus.rute" :state="ruteState" required></b-form-input>
+          <b-form-input id="rute" v-model.trim="$v.halte_bus.rute.$model" :state="validateState('rute')" aria-describedby="input-2-live-feedback" ></b-form-input>
+          <b-form-invalid-feedback
+          id="input-2-live-feedback"
+        >Rute field is required</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group id="fieldsetHorizontal"
-                  :state="latState"
-                  invalid-feedback="Latitude is required"
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Latitude">
-          <b-form-input id="latitude" v-model.trim="halte_bus.latitude" :state="latState" required></b-form-input>
+          <b-form-input id="latitude" v-model.trim="$v.halte_bus.latitude.$model" :state="validateState('latitude')" aria-describedby="input-3-live-feedback"></b-form-input>
+          <b-form-invalid-feedback
+          id="input-3-live-feedback"
+        >Latitude field is required</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group id="fieldsetHorizontal"
-                  :state="lonState"
-                  invalid-feedback="Longitude is required"
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Longitude">
-          <b-form-input id="longitude" v-model.trim="halte_bus.longitude" :state="lonState" required></b-form-input>
+          <b-form-input id="longitude" v-model.trim="$v.halte_bus.longitude.$model" :state="validateState('longitude')" aria-describedby="input-4-live-feedback"></b-form-input>
+          <b-form-invalid-feedback
+          id="input-4-live-feedback"
+        >Longitude field is required</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group id="fieldsetHorizontal"
-                  :state="typeState"
-                  invalid-feedback="Type is required"
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Type">
-          <b-form-input id="type" v-model.trim="halte_bus.type" :state="typeState" required></b-form-input>
+          <b-form-input id="type" v-model.trim="$v.halte_bus.type.$model" :state="validateState('type')" aria-describedby="input-5-live-feedback"></b-form-input>
+          <b-form-invalid-feedback
+          id="input-5-live-feedback"
+        >Type field is required</b-form-invalid-feedback>
+       
         </b-form-group>
       </form>
     </b-modal>
@@ -134,14 +160,13 @@
 
 import firebase from '@/Firebase'
 import router from '@/router/index.js'
+import { validationMixin } from "vuelidate";
+import { required, minLength } from "vuelidate/lib/validators";
+
 
 export default {
+  mixins: [validationMixin],
   name: 'HalteList',
-  computed: {
-      nameState() {
-        return this.halte_bus.name == null || this.halte_bus == '' ? false : true
-      }
-    },
   data () {
     return {
       fields: [
@@ -152,22 +177,40 @@ export default {
         { key: 'rute',label: 'Rute', 'class': 'text-left' },
         { key: 'actions',label: 'Action', 'class': 'text-center' }
       ],
+      totalRows: 1,
+      currentPage: 1,
+      perPage: 10,
       filter: null,
       filterOn: [],
       halte_buses: [],
       errors: [],
       ref: firebase.firestore().collection('halte_bus'),
       lastIndex: 0,
-      halte_bus: {},
+      halte_bus: {
+        name: null,
+        rute: null,
+        latitude: null,
+        longitude: null,
+        type: null
+      },
       index: 0,
-      isNotSame: false,
-      //nameState: null,
-      ruteState: null,
-      latState: null,
-      lonState: null,
-      typeState: null,
+      isSame: false,
     }
   },
+   validations: {
+    halte_bus: {
+      name: {required,minLength: minLength(3)},
+      rute: {required},
+      latitude: {required},
+      longitude: {required},
+      type: {required},
+  
+    }
+  },
+   mounted() {
+      // Set the initial number of items
+      this.totalRows = this.halte_buses.length
+    },
   created () {
     this.ref.onSnapshot((querySnapshot) => {
       this.halte_buses = [];
@@ -186,22 +229,20 @@ export default {
         }
         
       });
+      this.totalRows = this.halte_buses.length;
     });
     
   },
   methods: {
-    nameValid(){
-      this.nameState = true;
-    },
-    checkFormValidity() {
-        const valid = this.$refs.form.checkValidity();
-        this.nameState = valid;
-        this.ruteState = valid;
-        this.latState = valid;
-        this.lonState = valid;
-        this.typeState = valid;
-        return valid
+     onFiltered(filteredItems) {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
       },
+    validateState(name) {
+      const { $dirty, $error } = this.$v.halte_bus[name];
+      return $dirty ? !$error : null;
+    },
     edithalte (id) {
       router.push({
         name: 'EditHalte',
@@ -227,8 +268,10 @@ export default {
     },
     handleOkAdd(bvModalEvt) {
       // Trigger submit handler
+      this.isSame = false;
       bvModalEvt.preventDefault()
-      // this.halte_buses.forEach(this.checkName);
+       this.isSame = false;
+      this.halte_buses.forEach(this.checkName);
       // if(!this.isNotSame){
          
       // }else{
@@ -239,11 +282,15 @@ export default {
     },
     checkName(item) {
         if(item.name.trim().toLowerCase() == this.halte_bus.name.trim().toLowerCase())
-          this.isNotSame = true;
+          this.isSame = true;
     },
     handleSubmitAdd() {
-      if (!this.checkFormValidity()) {
-          return
+      this.$v.halte_bus.$touch();
+      if (this.$v.halte_bus.$anyError) {
+        return;
+      }
+      if(this.isSame){
+        return
       }
  
       this.index = parseInt(this.lastIndex) + 1;
@@ -251,7 +298,6 @@ export default {
       
       
 
-        console.log('data nya tidak sama bos');
         this.ref.doc('halte_'+this.index).set(this.halte_bus).then(() => {
           console.log("Document successfully added!");
           this.halte_bus.name = ''
@@ -260,7 +306,7 @@ export default {
           this.halte_bus.type = ''
           this.halte_bus.rute = ''
           this.index = 0
-          this.isNotSame = false
+          this.isSame = false
         })
         .catch((error) => {
           alert("Error adding document: ", error);
@@ -276,6 +322,12 @@ export default {
 </script>
 
 <style>
+.pagination .page-item.active .page-link:focus{
+    box-shadow: 0 0 0 3px rgba(0,123,255,.5);
+    z-index: 2;
+    color: #0275d8;
+}
+
   /* .dataTitle{
     text-align: left;
     margin-bottom: 20px;
