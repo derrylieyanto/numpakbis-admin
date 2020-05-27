@@ -36,20 +36,6 @@
               </b-form-group>
             </b-col>
 
-            <!-- <b-col lg="6" class="my-1">
-              <b-form-group
-                label="Filter On"
-                label-cols-sm="3"
-                label-align-sm="right"
-                label-size="sm"
-                description="Leave all unchecked to filter on all data"
-                class="mb-10">
-                <b-form-checkbox-group v-model="filterOn" class="mt-1">
-                  <b-form-checkbox value="name">Name</b-form-checkbox>
-                  <b-form-checkbox value="type">Type</b-form-checkbox>
-                </b-form-checkbox-group>
-              </b-form-group>
-            </b-col> -->
           </b-row>
 
           <div class="table-wrapper">
@@ -268,7 +254,6 @@ export default {
     },
     handleOkAdd(bvModalEvt) {
       // Trigger submit handler
-      this.isSame = false;
       bvModalEvt.preventDefault()
        this.isSame = false;
       this.halte_buses.forEach(this.checkName);

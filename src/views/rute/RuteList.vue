@@ -97,14 +97,22 @@
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Name">
-          <b-form-input id="name" v-model.trim="rute_bus.rute_name"></b-form-input>
+          <b-form-input id="name" v-model.trim="$v.rute_bus.rute_name.$model" :state="validateState('rute_name')"
+          aria-describedby="input-1-live-feedback"></b-form-input>
+           <b-form-invalid-feedback
+          id="input-1-live-feedback"
+        >Name field is required</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group id="fieldsetHorizontal"
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
                   label="Enter Type">
-          <b-form-input id="type" v-model.trim="rute_bus.rute_type"></b-form-input>
+          <b-form-input id="type" v-model.trim="$v.rute_bus.rute_type.$model" :state="validateState('rute_type')"
+          aria-describedby="input-2-live-feedback"></b-form-input>
+           <b-form-invalid-feedback
+          id="input-2-live-feedback"
+        >Type field is required</b-form-invalid-feedback>
         </b-form-group>
       </form>
     </b-modal>
@@ -138,10 +146,12 @@
 import firebase from '@/Firebase'
 import router from '@/router/index.js'
 
-
+import { validationMixin } from "vuelidate";
+import { required } from "vuelidate/lib/validators";
 
 
 export default {
+  mixins: [validationMixin],
   name: 'HalteList',
   data () {
     return {
@@ -167,7 +177,10 @@ export default {
       errors: [],
       ref: firebase.firestore().collection('rute_bus'),
       lastIndex: 0,
-      rute_bus: {},
+      rute_bus: {
+        rute_name: null,
+        rute_type: null
+      },
       halte_buses: [],
       halte_bus: {},
       index: 0,
@@ -213,7 +226,21 @@ export default {
 
     });
   },
+   validations: {
+    rute_bus: {
+      rute_name: {
+        required
+      },
+      rute_type: {
+        required
+      }
+    }
+  },
   methods: {
+    validateState(name) {
+      const { $dirty, $error } = this.$v.rute_bus[name];
+      return $dirty ? !$error : null;
+    },
     nameWithLang ({name}) {
       return `${name}`
     },
@@ -290,10 +317,14 @@ export default {
     },
     handleOkAdd(bvModalEvt) {
       // Trigger submit handler
-      this.handleSubmitAdd(bvModalEvt)
+      bvModalEvt.preventDefault();
+      this.handleSubmitAdd()
     },
-    handleSubmitAdd(evt) {
-      evt.preventDefault()
+    handleSubmitAdd() {
+      this.$v.rute_bus.$touch();
+      if (this.$v.rute_bus.$anyError) {
+        return;
+      }
       this.index = parseInt(this.lastIndex) + 1;
       this.ref.doc('rute_'+this.index).set(this.rute_bus).then(() => {
         console.log("Document successfully added!");

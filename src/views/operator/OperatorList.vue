@@ -62,13 +62,17 @@
       @ok="handleOkAdd"
     >
       <form ref="form" @submit="handleSubmitAdd">
-        <!-- <b-button size="sm" class="mx-1 my-2 add-halte" variant="success" @click.stop="addSelectHalte()"><i class="fa fa-plus"></i></b-button> -->
-        <b-form-select v-model="selected" :options="options" class="mb-3">
-        <!-- This slot appears above the options from 'options' prop -->
+        <div>
+          <label class="typo__label">Select with search from member</label>
+          <multiselect v-model="selected" :options="options" :custom-label="nameWithLang" placeholder="-- Please select member --" label="name" track-by="name"></multiselect>
+        </div>
+    
+        <!-- <b-form-select v-model="selected" :options="options" class="mb-3">
+
         <template v-slot:first>
           <b-form-select-option :value="null" disabled>-- Please select member --</b-form-select-option>
         </template>
-      </b-form-select>
+      </b-form-select> -->
     
       </form>
     </b-modal>
@@ -120,6 +124,9 @@ export default {
     
   },
   methods: {
+    nameWithLang ({name}) {
+      return `${name}`
+    },
     editmember (id) {
       router.push({
         name: 'EditOperator',
@@ -155,10 +162,8 @@ export default {
                 this.member.noHP = doc.data().noHP;
                 this.member.job = 'operator';
                 this.options.push({
-                    value: {
                     key: doc.id,
-                    },
-                    text: doc.data().email
+                    name: doc.data().email
                 });
             }
           

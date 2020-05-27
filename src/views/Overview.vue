@@ -1,79 +1,95 @@
 <template>
-  <div class="overview">
-      <div class="container h-100">
-          <div class="intro h-100">
-            <div class="row h-100 justify-content-center align-items-center">
-              <div class="col-md-6">
-                 <h3>Overview Page</h3>
-                 <div>
-                  <p v-if="isConnected">We're connected to the server!</p>
-                  <p>Message from server: "{{socketMessage}}"</p>
-                  <button @click="pingServer()">Ping Server</button>
-                  <div>
-                    <label class="typo__label">Select with search</label><br><br>
-                    <multiselect v-model="value" :options="options" :custom-label="nameWithLang" placeholder="Select one" label="name" track-by="name"></multiselect>
-                    <br><br><pre class="language-json"><code>{{ value  }}</code></pre>
-                  </div>
-                </div>
-              </div>
-          </div>
-          </div>
-     
-      </div>
-  </div>
+  <div class="App"/>
 </template>
 
 <script>
-
-import io from "socket.io-client";
-var socket = io.connect("https://numpakbis-server.herokuapp.com/");
+import gmapsInit from '@/utils/gmaps';
 
 
 export default {
-  name: "Overview",
-
+  name: 'Overview',
    data () {
     return {
-      isConnected: false,
-      socketMessage: [],
-      value: [],
-      options: [
-        { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Adonis', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' },
-        { name: 'Phoenix', language: 'Elixir' }
-      ]
+      locations : [
+      {
+        position: {
+          lat: -7.783033,
+          lng: 110.402315,
+        },
+      },
+      {
+        position: {
+          lat: -7.783197,
+          lng: 110.411657,
+        },
+      },
+    ],
+
+
     }
   },
-   created() {
-    this.getRealtimeData()
-  }, 
+  async mounted() {
+    try {
+      const google = await gmapsInit();
+      const geocoder = new google.maps.Geocoder();
+      const map = new google.maps.Map(this.$el);
+
+      geocoder.geocode({ address: 'Yogyakarta' }, (results, status) => {
+        if (status !== 'OK' || !results[0]) {
+          throw new Error(status);
+        }
+       
+        map.setCenter(results[0].geometry.location);
+        map.fitBounds(results[0].geometry.viewport);
+         map.setZoom(16);
+      });
+      
+    this.locations.map(x => new google.maps.Marker({ ...x, map }));
+    this.getDistance();
+
+    } catch (error) {
+      console.error(error);
+    }
+  },
   methods: {
-    nameWithLang ({ name, language }) {
-      return `${name} — [${language}]`
-    },
-   getRealtimeData() {
-      socket.on("receive_message", fetchedData => {
-        //this.socketMessage.push(fetchedData);
-        console.log(fetchedData);
-      })
-      socket.on("pingServer", fetchedData => {
-        this.socketMessage.push(fetchedData);
-      })
-    },
-    pingServer() {
-      // Send the "pingServer" event to the server.
-       socket.emit('pingServer', 'PING!')
-    },
-  }
+    async getDistance(){
+      const google = await gmapsInit();
+      //Find the distance
+      var origin = new google.maps.LatLng(-7.783033, 110.402315);
+      var destination = new google.maps.LatLng(-7.783197,110.411657);
+      var distanceService = new google.maps.DistanceMatrixService();
+      distanceService.getDistanceMatrix({
+          origins: [origin],
+          destinations: [destination],
+          travelMode: google.maps.TravelMode.DRIVING,
+          unitSystem: google.maps.UnitSystem.METRIC,
+          durationInTraffic: true,
+          avoidHighways: false,
+          avoidTolls: false
+      },
+      function (response, status) {
+          if (status !== google.maps.DistanceMatrixStatus.OK) {
+              console.log('Error:', status);
+          } else {
+              console.log(response);
+              console.log(response.rows[0].elements[0].distance.text);
+              console.log(response.rows[0].elements[0].duration.text);
+          }
+      });
+    }
+  },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style scoped lang="scss">
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
 
-
+.App {
+  width: 100vw;
+  height: 100vh;
+}
 </style>
