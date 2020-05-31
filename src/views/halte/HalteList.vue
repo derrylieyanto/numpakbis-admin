@@ -251,6 +251,7 @@ export default {
       this.halte_bus.type = ''
       this.halte_bus.rute = ''
       this.index = 0
+      this.isSame = false
     },
     handleOkAdd(bvModalEvt) {
       // Trigger submit handler
@@ -300,6 +301,13 @@ export default {
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-add')
+        this.halte_bus.name = ''
+          this.halte_bus.latitude = ''
+          this.halte_bus.longitude = ''
+          this.halte_bus.type = ''
+          this.halte_bus.rute = ''
+          this.index = 0
+          this.isSame = false
       })
     }
   }

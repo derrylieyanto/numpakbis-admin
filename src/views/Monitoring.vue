@@ -4,7 +4,6 @@
           <div class="intro">
             <div class="row justify-content-center align-items-center">
               <div class="col-md-12">
-                 <h3>Monitor Page</h3>
                  <div>
                     
                     <div class="card cascade narrower">
