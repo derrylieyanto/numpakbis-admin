@@ -2,10 +2,10 @@
    
  
   <div class="login">
-       <img src="./assets/numpakbis.png">
+       <img width="200px" height="200px" :src="require('@/assets/numpakbis.png')">
      <b-card header-tag="header" footer-tag="footer">
       <template v-slot:header>
-        <h6 class="mb-0">Numpakbis Admin</h6>
+        <h6 class="mb-0">Numpak Bis Admin</h6>
       </template>
       <b-card-text>
         <b-row>
@@ -124,6 +124,7 @@
   .login{
     width: 50%;
     margin: 10% auto;
+    margin-top: 0;
     text-align: center;
   }
    .btn-center{
