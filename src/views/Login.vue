@@ -2,7 +2,7 @@
    
  
   <div class="login">
-
+       <img src="./assets/numpakbis.png">
      <b-card header-tag="header" footer-tag="footer">
       <template v-slot:header>
         <h6 class="mb-0">Numpakbis Admin</h6>
