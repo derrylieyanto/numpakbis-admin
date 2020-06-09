@@ -1,6 +1,5 @@
 <template>
-  <div class="monitor">
-      <div class="container">
+    <b-container fluid>
           <div class="intro">
             <div class="row justify-content-center align-items-center">
               <div class="col-md-12">
@@ -43,10 +42,9 @@
 
                                 <!--Table-->
                                 <b-table striped hover :items="buses" :fields="fields" :filter="filter" :filterIncludedFields="filterOn">
-                                  <template v-slot:cell(actions)="row">
-                                  <!-- <b-button size="sm" class="mx-1" @click.stop="details(row.item)">Details</b-button> -->
-                                  <b-button size="sm" class="mx-1" variant="success" @click.stop="trackBus(row.item)">Track</b-button>
-                                  </template>
+                                  <!-- <template v-slot:cell(actions)="row">
+                                  <b-button size="sm" class="mx-1" variant="success" v-b-modal="'mapModal'" @click.stop="trackBus(row.item)">Track</b-button>
+                                  </template> -->
                                 </b-table>
                             </div>
                         </div>
@@ -56,9 +54,14 @@
               </div>
           </div>
           </div>
+
+          <!-- <b-modal ref="mapModal" id="mapModal" title="Track Bus" ok-only>
+            <div class="MapTrack" id="MapTrack" ref="MapTrack">
+              a
+            </div>
+          </b-modal> -->
      
-      </div>
-  </div>
+    </b-container>
 </template>
 
 <script>
@@ -80,7 +83,7 @@ export default {
         { key: 'rute',label: 'Rute', 'class': 'text-left' },
         { key: 'halte',label: 'Tujuan', sortable: true, 'class': 'text-left' },
         { key: 'estimasi',label: 'Estimasi', 'class': 'text-left' },
-        { key: 'actions',label: 'Action', 'class': 'text-center' }
+        //{ key: 'actions',label: 'Action', 'class': 'text-center' }
       ],
       buses: [],
       isSame: false,
@@ -88,17 +91,23 @@ export default {
       filter: null,
       filterOn: [],
       estimasiWaktu: "",
+      selectedData: {},
+      locations: [],
+      polylines: [],
 
     }
   },
    created() {
     this.getRealtimeData()
   }, 
+  mounted(){
+    console.log(this.$refs.MapTrack);
+  },
   methods: {
 
     getRealtimeData() {
       socket.on("receive_message",async fetchedData =>{
-        
+        console.log(fetchedData);
         var waktu = await this.getDistance(parseFloat(fetchedData.message.latitude),
           parseFloat(fetchedData.message.longitude),
           parseFloat(fetchedData.message.halteLat),
@@ -117,14 +126,26 @@ export default {
           estimasi: waktu,
         };
         this.isSame = false;
-        if(this.buses == null || this.buses.length == 0){
-          this.buses.push(this.data);
-        }else{
-          this.buses.forEach(this.checkSame);
-          if (!this.isSame) {
+        if(fetchedData.message.status == "active"){
+          if(this.buses == null || this.buses.length == 0){
             this.buses.push(this.data);
+          }else{
+            this.buses.forEach(this.checkSame);
+            if (!this.isSame) {
+              this.buses.push(this.data);
+            }
+          }
+        }else{
+          if(this.buses == null || this.buses.length == 0){
+            this.buses.pop();
+          }else{
+            this.buses.forEach(this.removeSame);
+            if (!this.isSame) {
+              this.buses.push(this.data);
+            }
           }
         }
+        
     
       })
     },
@@ -132,6 +153,12 @@ export default {
       if(item.plat == this.data.plat){
         this.isSame = true;
         arr[index] = this.data;
+      }
+    },
+    removeSame(item,index,arr){
+      if(item.plat == this.data.plat){
+        this.isSame = true;
+        arr.splice(index,1);
       }
     },
     async getDistance(lat1,lon1,lat2,lon2){
@@ -162,9 +189,70 @@ export default {
           }
         });
       });
-     
+    },
+    async trackBus(item){
+      this.selectedData = item;
+      
+       try {
+      const google = await gmapsInit();
+      const geocoder = new google.maps.Geocoder();
+      const map = new google.maps.Map(this.$bvModal);
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer();
+
+      geocoder.geocode({ address: 'Yogyakarta' }, (results, status) => {
+        if (status !== 'OK' || !results[0]) {
+          throw new Error(status);
+        }
        
+        map.setCenter(results[0].geometry.location);
+        map.fitBounds(results[0].geometry.viewport);
+         map.setZoom(13);
+      });
+
+      // const markerClickHandler = (marker) => {
+      //   map.setZoom(16);
+      //   map.setCenter(marker.getPosition());
+      //   var infoWindow = new google.maps.InfoWindow({
+      //       size: new google.maps.Size(150, 50)
+      //   });
+      //   var contentString = marker.id;
+      //   infoWindow.setContent(contentString);
+      //   infoWindow.open(map, marker);
+      // };
+      
+      // this.locations.map((location) => {
+      //   const marker = new google.maps.Marker({ ...location, map });
+      //   marker.addListener('click', () => markerClickHandler(marker));
+      //   return marker;
+      // });
+
+      this.getDistance();
+
+      directionsRenderer.setMap(map);
+
+      directionsService.route(
+      {
+        origin: new google.maps.LatLng(-7.783033, 110.402315),
+        destination: new google.maps.LatLng(-7.783197,110.411657),
+        travelMode: 'DRIVING'
+      },
+      function(response, status) {
+        if (status === 'OK') {
+          directionsRenderer.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+        }
+      });
+
+    } catch (error) {
+      console.error(error);
     }
+
+      
+
+    }
+
 
 
   }
@@ -177,6 +265,10 @@ export default {
   max-width: 1000px;
   max-height: 500px;
   margin: 10px auto;
+}
+.MapTrack {
+  width: 50vw;
+  height: 50vh;
 }
 
 </style>
