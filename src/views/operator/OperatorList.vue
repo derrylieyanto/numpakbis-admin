@@ -64,7 +64,7 @@
       <form ref="form" @submit="handleSubmitAdd">
         <div>
           <label class="typo__label">Select with search from member</label>
-          <multiselect v-model="selected" :options="options" :custom-label="nameWithLang" placeholder="-- Please select member --" label="name" track-by="name"></multiselect>
+          <multiselect v-model="selected" :options="options" :custom-label="nameWithLang" placeholder="-- Please select member --" label="email" track-by="email"></multiselect>
         </div>
     
         <!-- <b-form-select v-model="selected" :options="options" class="mb-3">
@@ -124,8 +124,8 @@ export default {
     
   },
   methods: {
-    nameWithLang ({name}) {
-      return `${name}`
+    nameWithLang ({email}) {
+      return `${email}`
     },
     editmember (id) {
       router.push({
@@ -163,7 +163,9 @@ export default {
                 this.member.job = 'operator';
                 this.options.push({
                     key: doc.id,
-                    name: doc.data().email
+                    email: doc.data().email,
+                    name: doc.data().name,
+                    noHP: doc.data().noHP,
                 });
             }
           
@@ -176,7 +178,14 @@ export default {
     },
     handleSubmitAdd(evt) {
       evt.preventDefault()
-      this.ref.doc(this.selected.key).set(this.member).then(() => {
+      this.ref.doc(this.selected.key).set(
+        {
+          email: this.selected.email,
+          name: this.selected.name,
+          noHP: this.selected.noHP,
+          job: "operator"
+        }
+      ).then(() => {
         console.log("Document successfully added!");
         this.member.name = ''
         this.member.email = ''
