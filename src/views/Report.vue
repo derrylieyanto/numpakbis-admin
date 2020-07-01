@@ -209,7 +209,6 @@ export default {
      },
      generateReport(){
          var tempDate = this.date.toString().replace(/-/g,'');
-         console.log(tempDate);
          this.ref.doc(tempDate).collection("operator").onSnapshot((querySnapshot) => {
             this.reports = [];
             querySnapshot.forEach((doc) => {
@@ -227,10 +226,13 @@ export default {
                 
             });
             this.totalRows = this.reports.length;
-            });
-            if (!this.reports?.length) {
+            console.log(this.totalRows);
+            if (this.reports.length<1) {
                 this.showAlert();
             }
+            });
+            
+
      },
      countDownChanged(dismissCountDown) {
         this.dismissCountDown = dismissCountDown
