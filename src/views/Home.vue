@@ -57,8 +57,26 @@
                             </router-link>
                         </li>
                         <li>
-                            <router-link to="/home/halte" exact-active-class="">
+                            <router-link :to="{ name: 'Report'}">
+                                <i class="fa fa-table"></i>
+                                <span>Report</span>
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/home/BRT">
+                                <i class="fas fa-road"></i>
+                                <span>BRT</span>
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/home/plat">
                                 <i class="fas fa-bus-alt"></i>
+                                <span>Plat Nomor Bus</span>
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/home/halte" exact-active-class="">
+                                <i class="fas fa-map-marked-alt"></i>
                                 <span>Halte Bus</span>
                             </router-link>
                         </li>
@@ -80,7 +98,7 @@
                                 <i class="fas fa-user-tie"></i>
                                 <span>Operator</span>
                             </router-link>
-                        </li>
+                        </li>     
                         <li>
                             <a href="#" @click="logout">
                                 <i class="fa fa-power-off"></i>

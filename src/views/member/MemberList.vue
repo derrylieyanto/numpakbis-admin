@@ -24,7 +24,7 @@
                     v-model="filter"
                     type="search"
                     id="filterInput"
-                    placeholder="Type to Search"
+                    placeholder="Search"
                   ></b-form-input>
                   <b-input-group-append>
                     <b-button class="mx-2 px-2" :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -48,48 +48,6 @@
       </div>
   </div>
   
-
-  <!-- Add modal
-    <b-modal
-      id="modal-add"
-      ref="modal"
-      title="Add Halte Bus"
-      @show="resetModalAdd"
-      @hidden="resetModalAdd"
-      @ok="handleOkAdd"
-    >
-      <form ref="form" @submit="handleSubmitAdd">
-        <b-form-group id="fieldsetHorizontal"
-                  horizontal
-                  :label-cols="4"
-                  breakpoint="md"
-                  label="Enter Name">
-          <b-form-input id="name" v-model.trim="member.name"></b-form-input>
-        </b-form-group>
-        <b-form-group id="fieldsetHorizontal"
-                  horizontal
-                  :label-cols="4"
-                  breakpoint="md"
-                  label="Enter Latitude">
-          <b-form-input id="latitude" v-model.trim="member.latitude"></b-form-input>
-        </b-form-group>
-        <b-form-group id="fieldsetHorizontal"
-                  horizontal
-                  :label-cols="4"
-                  breakpoint="md"
-                  label="Enter Longitude">
-          <b-form-input id="longitude" v-model.trim="member.longitude"></b-form-input>
-        </b-form-group>
-        <b-form-group id="fieldsetHorizontal"
-                  horizontal
-                  :label-cols="4"
-                  breakpoint="md"
-                  label="Enter Type">
-          <b-form-input id="type" v-model.trim="member.type"></b-form-input>
-        </b-form-group>
-      </form>
-    </b-modal> -->
-    
   
 </b-container>
 </template>

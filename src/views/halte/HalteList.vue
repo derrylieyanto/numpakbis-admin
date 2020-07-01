@@ -27,7 +27,7 @@
                     v-model="filter"
                     type="search"
                     id="filterInput"
-                    placeholder="Type to Search"
+                    placeholder="Search"
                   ></b-form-input>
                   <b-input-group-append>
                     <b-button class="mx-2 px-2" :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -85,7 +85,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Name">
+                  label="Name">
           <b-form-input id="name" v-model.trim="$v.halte_bus.name.$model" :state="validateState('name')" aria-describedby="input-1-live-feedback"></b-form-input>
           <b-form-invalid-feedback
           id="input-1-live-feedback"
@@ -98,7 +98,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Rute">
+                  label="Rute">
           <b-form-input id="rute" v-model.trim="$v.halte_bus.rute.$model" :state="validateState('rute')" aria-describedby="input-2-live-feedback" ></b-form-input>
           <b-form-invalid-feedback
           id="input-2-live-feedback"
@@ -108,7 +108,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Latitude">
+                  label="Latitude">
           <b-form-input id="latitude" v-model.trim="$v.halte_bus.latitude.$model" :state="validateState('latitude')" aria-describedby="input-3-live-feedback"></b-form-input>
           <b-form-invalid-feedback
           id="input-3-live-feedback"
@@ -118,7 +118,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Longitude">
+                  label="Longitude">
           <b-form-input id="longitude" v-model.trim="$v.halte_bus.longitude.$model" :state="validateState('longitude')" aria-describedby="input-4-live-feedback"></b-form-input>
           <b-form-invalid-feedback
           id="input-4-live-feedback"
@@ -128,7 +128,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Type">
+                  label="Type">
           <b-form-input id="type" v-model.trim="$v.halte_bus.type.$model" :state="validateState('type')" aria-describedby="input-5-live-feedback"></b-form-input>
           <b-form-invalid-feedback
           id="input-5-live-feedback"

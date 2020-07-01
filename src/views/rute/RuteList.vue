@@ -27,7 +27,7 @@
                     v-model="filter"
                     type="search"
                     id="filterInput"
-                    placeholder="Type to Search"
+                    placeholder="Search"
                   ></b-form-input>
                   <b-input-group-append>
                     <b-button class="mx-2 px-2 " :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -96,7 +96,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Name">
+                  label="Name">
           <b-form-input id="name" v-model.trim="$v.rute_bus.rute_name.$model" :state="validateState('rute_name')"
           aria-describedby="input-1-live-feedback"></b-form-input>
            <b-form-invalid-feedback
@@ -107,7 +107,7 @@
                   horizontal
                   :label-cols="4"
                   breakpoint="md"
-                  label="Enter Type">
+                  label="Type">
           <b-form-input id="type" v-model.trim="$v.rute_bus.rute_type.$model" :state="validateState('rute_type')"
           aria-describedby="input-2-live-feedback"></b-form-input>
            <b-form-invalid-feedback

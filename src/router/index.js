@@ -9,9 +9,14 @@ import MemberList from '@/views/member/MemberList'
 import EditMember from '@/views/member/EditMember'
 import OperatorList from '@/views/operator/OperatorList'
 import EditOperator from '@/views/operator/EditOperator'
+import BRTList from '@/views/BRT/BRTList'
+import EditBRT from '@/views/BRT/EditBRT'
+import PlatList from '@/views/plat/PlatList'
+import EditPlat from '@/views/plat/EditPlat'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
 import Monitoring from '@/views/Monitoring'
+import Report from '@/views/Report'
 import Overview from '@/views/Overview'
 
 Vue.use(Router)
@@ -86,9 +91,38 @@ const router = new Router({
             
           },
           {
+            path: 'BRT',
+            name: 'BRTList',
+            component: BRTList,
+            
+          },
+          {
+            path: 'edit-BRT/:id',
+            name: 'EditBRT',
+            component: EditBRT,
+            
+          },
+          {
+            path: 'plat',
+            name: 'PlatList',
+            component: PlatList,
+            
+          },
+          {
+            path: 'edit-plat/:id',
+            name: 'EditPlat',
+            component: EditPlat,
+            
+          },
+          {
             path: 'monitoring',
             name: 'Monitoring',
             component: Monitoring,
+          },
+          {
+            path: 'report',
+            name: 'Report',
+            component: Report,
           },
           {
             path: 'overview',
