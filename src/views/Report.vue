@@ -228,7 +228,7 @@ export default {
             });
             this.totalRows = this.reports.length;
             });
-            if (!this.report?.length) {
+            if (!this.reports?.length) {
                 this.showAlert();
             }
      },
